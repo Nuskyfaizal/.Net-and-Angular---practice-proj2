@@ -21,8 +21,6 @@ internal class Program
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
-
-
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -33,6 +31,11 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseCors(x => x
+       .AllowAnyHeader()
+       .AllowAnyMethod()
+       .AllowAnyOrigin());
 
         app.UseAuthorization();
 

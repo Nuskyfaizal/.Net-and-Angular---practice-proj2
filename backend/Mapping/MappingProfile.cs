@@ -10,6 +10,9 @@ namespace backend.Mapping
         {
             CreateMap<Make, MakeDto>();
             CreateMap<Model, ModelDto>();
+            CreateMap<Feature, FeatureDto>();
+            CreateMap<Make, FeatureDto>();
+            CreateMap<Model, FeatureDto>();
         }
     }
 }

@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { MakeService } from '../_services/make.service';
+import { VehicleService } from '../_services/vehicle.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MakeListResolver {
-  constructor(private makeService: MakeService, private router: Router) {}
+  constructor(private vehicleService: VehicleService, private router: Router) {}
 
   resolve() {
-    return this.makeService.getMakes().pipe(
+    return this.vehicleService.getMakes().pipe(
       catchError((error) => {
         console.log(error + 'Problem retrieving data');
         return of(null);

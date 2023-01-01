@@ -10,20 +10,25 @@ namespace backend.Mapping
         {
             //Domain to DTO resource
             CreateMap<Make, MakeDto>();
-            CreateMap<Model, ModelDto>();
-            CreateMap<Feature, FeatureDto>();
+            CreateMap<Make, KeyValuePairDto>();
+            CreateMap<Model, KeyValuePairDto>();
+            CreateMap<Feature, KeyValuePairDto>();
+            CreateMap<Vehicle, SaveVehicleDto>()
+                .ForMember(vr => vr.Contact, opt => opt.MapFrom(v => new ContactResource { Name = v.ContactName, Email = v.ContactEmail, Phone = v.ContactPhone }))
+                .ForMember(vr => vr.Features, opt => opt.MapFrom(v => v.Features.Select(vf => vf.FeatureId)));
             CreateMap<Vehicle, VehicleDto>()
-            .ForMember(vr => vr.Contact, opt => opt.MapFrom(v => new ContactResource { Name = v.ContactName, Email = v.ContactEmail, Phone = v.ContactPhone }))
-            .ForMember(vr => vr.Features, opt => opt.MapFrom(v => v.Features.Select(vf => vf.FeatureId)));
+            .ForMember(vr => vr.Make, opt => opt.MapFrom(v => v.Model.Make))
+                .ForMember(vr => vr.Contact, opt => opt.MapFrom(v => new ContactResource { Name = v.ContactName, Email = v.ContactEmail, Phone = v.ContactPhone }))
+                .ForMember(vr => vr.Features, opt => opt.MapFrom(v => v.Features.Select(vf => new KeyValuePairDto { Id = vf.Feature.Id, Name = vf.Feature.Name })));
 
             //DTO resource to Domain
-            CreateMap<VehicleDto, Vehicle>()
-            .ForMember(v => v.Id, opt => opt.Ignore())
-            .ForMember(v => v.ContactName, opt => opt.MapFrom(vr => vr.Contact.Name))
-            .ForMember(v => v.ContactEmail, opt => opt.MapFrom(vr => vr.Contact.Email))
-            .ForMember(v => v.ContactPhone, opt => opt.MapFrom(vr => vr.Contact.Phone))
-            .ForMember(v => v.Features, opt => opt.Ignore())
-            .AfterMap((vr, v) =>
+            CreateMap<SaveVehicleDto, Vehicle>()
+                .ForMember(v => v.Id, opt => opt.Ignore())
+                .ForMember(v => v.ContactName, opt => opt.MapFrom(vr => vr.Contact.Name))
+                .ForMember(v => v.ContactEmail, opt => opt.MapFrom(vr => vr.Contact.Email))
+                .ForMember(v => v.ContactPhone, opt => opt.MapFrom(vr => vr.Contact.Phone))
+                .ForMember(v => v.Features, opt => opt.Ignore())
+                .AfterMap((vr, v) =>
             {
                 //Remove unselected features
 

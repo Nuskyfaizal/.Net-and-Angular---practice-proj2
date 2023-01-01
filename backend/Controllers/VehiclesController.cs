@@ -1,4 +1,6 @@
 using AutoMapper;
+using backend.Core;
+using backend.Core.Models;
 using backend.Data;
 using backend.DTO;
 using backend.Models;
@@ -10,34 +12,39 @@ namespace backend.Controllers
     [Route("/api/[controller]")]
     public class VehiclesController : Controller
     {
-        private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public VehiclesController(DataContext context, IMapper mapper)
+        private readonly IVehicleRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
+        public VehiclesController(IMapper mapper, IVehicleRepository repository, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
+            _repository = repository;
             _mapper = mapper;
-            _context = context;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateVehicle([FromBody] VehicleDto vehicleDto)
+        public async Task<IActionResult> CreateVehicle([FromBody] SaveVehicleDto vehicleDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var model = await _context.Models.FindAsync(vehicleDto.ModelId);
-            if (model == null)
-            {
-                ModelState.AddModelError("ModelId", "Invalid ModelId");
-                return BadRequest(ModelState);
-            }
+            //Below shows how to add Business Logics
+            // var model = await _context.Models.FindAsync(vehicleDto.ModelId);
+            // if (model == null)
+            // {
+            //     ModelState.AddModelError("ModelId", "Invalid ModelId");
+            //     return BadRequest(ModelState);
+            // }
 
-            var vehicle = _mapper.Map<VehicleDto, Vehicle>(vehicleDto);
+            var vehicle = _mapper.Map<SaveVehicleDto, Vehicle>(vehicleDto);
             vehicle.LastUpdate = DateTime.Now;
 
-            _context.Vehicles.Add(vehicle);
-            await _context.SaveChangesAsync();
+            _repository.Add(vehicle);
+            await _unitOfWork.CompleteAsync();
+
+            vehicle = await _repository.GetVehicle(vehicle.Id);
 
             var result = _mapper.Map<Vehicle, VehicleDto>(vehicle);
 
@@ -45,21 +52,22 @@ namespace backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVehicle(int id, [FromBody] VehicleDto vehicleDto)
+        public async Task<IActionResult> UpdateVehicle(int id, [FromBody] SaveVehicleDto vehicleDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var vehicle = await _context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await _repository.GetVehicle(id);
 
             if (vehicle == null)
                 return NotFound();
 
-            _mapper.Map<VehicleDto, Vehicle>(vehicleDto, vehicle);
+            _mapper.Map<SaveVehicleDto, Vehicle>(vehicleDto, vehicle);
             vehicle.LastUpdate = DateTime.Now;
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.CompleteAsync();
 
+            vehicle = await _repository.GetVehicle(vehicle.Id);
             var result = _mapper.Map<Vehicle, VehicleDto>(vehicle);
 
             return Ok(result);
@@ -68,13 +76,13 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _repository.GetVehicle(id, false);
 
             if (vehicle == null)
                 return NotFound();
 
-            _context.Remove(vehicle);
-            await _context.SaveChangesAsync();
+            _repository.Remove(vehicle);
+            await _unitOfWork.CompleteAsync();
 
             return Ok(id);
         }
@@ -82,7 +90,7 @@ namespace backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var vehicle = await _context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await _repository.GetVehicle(id);
 
             if (vehicle == null)
                 return NotFound();

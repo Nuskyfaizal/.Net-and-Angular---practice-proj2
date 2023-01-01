@@ -1,3 +1,5 @@
+using backend.Core;
+using backend.Core.Models;
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +21,9 @@ internal class Program
                 builder.Configuration.GetConnectionString("Default")));
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
         var app = builder.Build();

@@ -19,11 +19,11 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<FeatureDto>> GetFeatures()
+        public async Task<IEnumerable<KeyValuePairDto>> GetFeatures()
         {
             var features = await _context.Features.ToListAsync();
 
-            return _mapper.Map<List<Feature>, List<FeatureDto>>(features);
+            return _mapper.Map<List<Feature>, List<KeyValuePairDto>>(features);
         }
     }
 }

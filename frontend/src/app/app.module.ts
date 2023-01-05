@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -9,11 +9,21 @@ import { VehicleService } from './_services/vehicle.service';
 import { HttpClientModule } from '@angular/common/http';
 import { MakeListResolver } from './_resolvers/make-list.resolver';
 import { FeatureResolver } from './_resolvers/feature.resolver';
+import { AlertifyService } from './_services/alertify.service';
+import { VehicleDetailResolver } from './_resolvers/vehicle-detail.resolver';
+import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
+import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 @NgModule({
-  declarations: [AppComponent, VehicleFormComponent],
+  declarations: [AppComponent, VehicleFormComponent, VehicleListComponent, NavMenuComponent],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
-  providers: [VehicleService, MakeListResolver, FeatureResolver],
+  providers: [
+    VehicleService,
+    MakeListResolver,
+    FeatureResolver,
+    VehicleDetailResolver,
+    AlertifyService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

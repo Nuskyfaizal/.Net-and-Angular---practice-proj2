@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { KeyValuePair } from '../Models/vehicle';
 import { VehicleService } from '../_services/vehicle.service';
 
 @Injectable({
@@ -10,7 +11,7 @@ import { VehicleService } from '../_services/vehicle.service';
 export class MakeListResolver {
   constructor(private vehicleService: VehicleService, private router: Router) {}
 
-  resolve() {
+  resolve(): Observable<KeyValuePair[]> {
     return this.vehicleService.getMakes().pipe(
       catchError((error) => {
         console.log(error + 'Problem retrieving data');

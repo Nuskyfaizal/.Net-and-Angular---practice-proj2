@@ -25,8 +25,6 @@ namespace backend.Data
                 .SingleOrDefaultAsync(v => v.Id == id);
         }
 
-
-
         public void Add(Vehicle vehicle)
         {
             _context.Vehicles.Add(vehicle);
@@ -37,5 +35,14 @@ namespace backend.Data
             _context.Vehicles.Remove(vehicle);
         }
 
+        public async Task<IEnumerable<Vehicle>> GetVehicles()
+        {
+            return await _context.Vehicles
+                .Include(v => v.Model)
+                    .ThenInclude(m => m.Make)
+                .Include(v => v.Features)
+                    .ThenInclude(vf => vf.Feature)
+                .ToListAsync();
+        }
     }
 }

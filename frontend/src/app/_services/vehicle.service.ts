@@ -47,12 +47,24 @@ export class VehicleService {
       .pipe(catchError((error) => error));
   }
 
-  getVehicles() {
-    return this.http.get<Vehicle[]>(this.baseUrl + 'vehicles').pipe(
-      map((res) => {
-        JSON.stringify(res);
-      }),
-      catchError((error) => error)
-    );
+  getVehicles(filter) {
+    return this.http
+      .get<Vehicle[]>(
+        this.baseUrl + 'vehicles' + '?' + this.toQueryString(filter)
+      )
+      .pipe(catchError((error) => error));
+  }
+
+  toQueryString(obj) {
+    const parts = [];
+    for (const property in obj) {
+      const value = obj[property];
+      if (value != null && value != undefined)
+        parts.push(
+          encodeURIComponent(property) + '=' + encodeURIComponent(value)
+        );
+    }
+
+    return parts.join('&');
   }
 }

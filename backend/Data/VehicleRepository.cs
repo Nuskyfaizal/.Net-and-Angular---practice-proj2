@@ -1,4 +1,6 @@
+using System.Linq.Expressions;
 using backend.Core.Models;
+using backend.Extensions;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,14 +37,44 @@ namespace backend.Data
             _context.Vehicles.Remove(vehicle);
         }
 
-        public async Task<IEnumerable<Vehicle>> GetVehicles()
+        public async Task<IEnumerable<Vehicle>> GetVehicles(VehicleQuery queryObj)
         {
-            return await _context.Vehicles
+            var query = _context.Vehicles
                 .Include(v => v.Model)
                     .ThenInclude(m => m.Make)
                 .Include(v => v.Features)
                     .ThenInclude(vf => vf.Feature)
-                .ToListAsync();
+                .AsQueryable();
+
+            //adding filtering logic
+            if (queryObj.MakeId.HasValue)
+                query = query.Where(v => v.Model.MakeId == queryObj.MakeId);
+
+            /**Sorting from server side using dictionary*/
+            var columnsMap = new Dictionary<string, Expression<Func<Vehicle, object>>>()
+            {
+                ["make"] = v => v.Model.Make.Name,
+                ["model"] = v => v.Model.Name,
+                ["contactName"] = v => v.ContactName
+            };
+
+            query = query.ApplyOrdering(queryObj, columnsMap);
+
+
+            /**Sorting from server side using normal method*/
+
+            // if (queryObj.SortBy == "make")
+            //     query = (queryObj.IsSortAscending) ? query.OrderBy(v => v.Model.Make.Name) : query.OrderByDescending(v => v.Model.Make.Name);
+            // if (queryObj.SortBy == "model")
+            //     query = (queryObj.IsSortAscending) ? query.OrderBy(v => v.Model.Name) : query.OrderByDescending(v => v.Model.Name);
+            // if (queryObj.SortBy == "contactName")
+            //     query = (queryObj.IsSortAscending) ? query.OrderBy(v => v.ContactName) : query.OrderByDescending(v => v.ContactName);
+            // if (queryObj.SortBy == "id")
+            //     query = (queryObj.IsSortAscending) ? query.OrderBy(v => v.Id) : query.OrderByDescending(v => v.Id);
+
+            return await query.ToListAsync();
         }
+
+
     }
 }

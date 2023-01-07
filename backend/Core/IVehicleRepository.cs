@@ -1,3 +1,4 @@
+using backend.DTO;
 using backend.Models;
 
 namespace backend.Core.Models
@@ -5,7 +6,7 @@ namespace backend.Core.Models
     public interface IVehicleRepository
     {
         Task<Vehicle> GetVehicle(int id, bool includeRelated = true);
-        Task<IEnumerable<Vehicle>> GetVehicles();
+        Task<IEnumerable<Vehicle>> GetVehicles(VehicleQuery filter);
         void Add(Vehicle vehicle);
         void Remove(Vehicle vehicle);
     }

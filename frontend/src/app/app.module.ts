@@ -13,9 +13,16 @@ import { AlertifyService } from './_services/alertify.service';
 import { VehicleDetailResolver } from './_resolvers/vehicle-detail.resolver';
 import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { PaginationComponent } from './shared/pagination/pagination.component';
 
 @NgModule({
-  declarations: [AppComponent, VehicleFormComponent, VehicleListComponent, NavMenuComponent],
+  declarations: [
+    AppComponent,
+    VehicleFormComponent,
+    VehicleListComponent,
+    NavMenuComponent,
+    PaginationComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
     VehicleService,

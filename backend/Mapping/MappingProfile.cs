@@ -9,6 +9,7 @@ namespace backend.Mapping
         public MappingProfile()
         {
             //Domain to DTO resource
+            CreateMap(typeof(QueryResult<>), typeof(QueryResultDto<>));
             CreateMap<Make, MakeDto>();
             CreateMap<Make, KeyValuePairDto>();
             CreateMap<Model, KeyValuePairDto>();

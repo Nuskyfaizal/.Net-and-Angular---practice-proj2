@@ -101,12 +101,12 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<VehicleDto>> GetVehicles(VehicleQueryDto FilterDto)
+        public async Task<QueryResultDto<VehicleDto>> GetVehicles(VehicleQueryDto FilterDto)
         {
             var filter = _mapper.Map<VehicleQueryDto, VehicleQuery>(FilterDto);
-            var vehicles = await _repository.GetVehicles(filter);
+            var queryResult = await _repository.GetVehicles(filter);
 
-            return _mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleDto>>(vehicles);
+            return _mapper.Map<QueryResult<Vehicle>, QueryResultDto<VehicleDto>>(queryResult);
         }
 
     }

@@ -37,8 +37,9 @@ namespace backend.Data
             _context.Vehicles.Remove(vehicle);
         }
 
-        public async Task<IEnumerable<Vehicle>> GetVehicles(VehicleQuery queryObj)
+        public async Task<QueryResult<Vehicle>> GetVehicles(VehicleQuery queryObj)
         {
+            var result = new QueryResult<Vehicle>();
             var query = _context.Vehicles
                 .Include(v => v.Model)
                     .ThenInclude(m => m.Make)
@@ -72,7 +73,13 @@ namespace backend.Data
             // if (queryObj.SortBy == "id")
             //     query = (queryObj.IsSortAscending) ? query.OrderBy(v => v.Id) : query.OrderByDescending(v => v.Id);
 
-            return await query.ToListAsync();
+            /**Pagination*/
+
+            result.TotalItems = await query.CountAsync();
+            query = query.ApplyPaging(queryObj);
+
+            result.Items = await query.ToListAsync();
+            return result;
         }
 
 

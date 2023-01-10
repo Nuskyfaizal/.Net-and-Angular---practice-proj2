@@ -14,15 +14,17 @@ import { VehicleDetailResolver } from './_resolvers/vehicle-detail.resolver';
 import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
+import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
 
 @NgModule({
-  declarations: [
+  declarations: [	
     AppComponent,
     VehicleFormComponent,
     VehicleListComponent,
     NavMenuComponent,
     PaginationComponent,
-  ],
+      ViewVehicleComponent
+   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
     VehicleService,

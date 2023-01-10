@@ -2,6 +2,7 @@ using backend.Core;
 using backend.Core.Models;
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 internal class Program
 {
@@ -24,6 +25,7 @@ internal class Program
 
         builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.Configure<PhotoSettings>(builder.Configuration.GetSection(""));
 
 
         var app = builder.Build();
@@ -47,5 +49,14 @@ internal class Program
         app.MapControllers();
 
         app.Run();
+
+        app.UseStaticFiles();
+
+        // (new StaticFileOptions
+        // {
+        //     FileProvider = new PhysicalFileProvider(
+        // Path.Combine(Directory.GetCurrentDirectory(), "static")),
+        //     RequestPath = "/static"
+        // });
     }
 }

@@ -3,12 +3,17 @@
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
-      <a href="#basic" aria-controls="basic" role="tab" data-toggle="tab"
+      <a aria-controls="basic" aria-selected="true" role="tab" data-toggle="tab"
         >Vehicle</a
       >
     </li>
     <li role="presentation">
-      <a href="#photos" aria-controls="photos" role="tab" data-toggle="tab"
+      <a
+        (click)="onClick()"
+        aria-controls="photos"
+        aria-selected="false"
+        role="tab"
+        data-toggle="tab"
         >Photos</a
       >
     </li>
@@ -17,7 +22,7 @@
   <!-- Tab panes -->
   <div class="tab-content" *ngIf="vehicle">
     <!-- Vehicle tab -->
-    <div role="tabpanel" class="tab-pane active" id="basic">
+    <div *ngIf="!visible" role="tabpanel" class="tab-pane active" id="basic">
       <h2>Basics</h2>
       <ul>
         <li>Make: {{ vehicle.make.name }}</li>
@@ -27,7 +32,7 @@
 
       <h2>Features</h2>
       <ul>
-        <li *ngFor="let feature of vehicle.features">{{ feature.name }}</li>
+        <li *ngFor="let f of vehicle.features">{{ f.name }}</li>
       </ul>
       <h2>Contact</h2>
       <ul>
@@ -47,6 +52,16 @@
           >View All Vehicles</a
         >
       </p>
+    </div>
+    <!-- Photos tab -->
+    <div *ngIf="!visible" role="tabpanel" class="tab-panel">
+      <h2>Photos</h2>
+      <input type="file" (change)="uploadPhoto()" #fileInput />
+      <img
+        *ngFor="let photo of photos"
+        src="/backend/uploads/{{ photo.fileName }}"
+        class="img-thumbnail"
+      />
     </div>
   </div>
 </div>

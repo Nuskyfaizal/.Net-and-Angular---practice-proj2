@@ -24,6 +24,7 @@ internal class Program
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+        builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.Configure<PhotoSettings>(builder.Configuration.GetSection(""));
 

@@ -15,16 +15,18 @@ import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
+import { PhotoService } from './_services/photo.service';
+// import { ProgressService } from './_services/progress.service';
 
 @NgModule({
-  declarations: [	
+  declarations: [
     AppComponent,
     VehicleFormComponent,
     VehicleListComponent,
     NavMenuComponent,
     PaginationComponent,
-      ViewVehicleComponent
-   ],
+    ViewVehicleComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
     VehicleService,
@@ -32,6 +34,8 @@ import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
     FeatureResolver,
     VehicleDetailResolver,
     AlertifyService,
+    PhotoService,
+    // ProgressService
   ],
   bootstrap: [AppComponent],
 })
